@@ -26,7 +26,11 @@ export default function Ecosystem({ onNavigate }) {
         <div className="eco__grid">
           {SERVICES.map((service) => (
             <button key={service.title} type="button" className="eco-card" onClick={() => onNavigate("que-hacemos")}>
-              <Icon name={service.icon} />
+              {service.icon === "pse" ? (
+                <img className="eco-card__icon" src="/icon-pse.png" alt="" />
+              ) : (
+                <Icon name={service.icon} />
+              )}
               <span>{service.title}</span>
             </button>
           ))}

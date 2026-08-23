@@ -3,9 +3,11 @@ import { useState } from "react"
 const SLIDES = [
   {
     title: "Acompañando decisiones que importan",
+    image: "/banner-hero.png",
   },
   {
     title: "Descargue sus certificados tributarios",
+    image: "/banner-cert.jpg",
     actions: ["Descargar certificados", "Calendario tributario"],
   },
 ]
@@ -26,31 +28,34 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      <div className="hero__inner">
-        <div className="hero__copy">
-          <h1>{current.title}</h1>
-          {current.actions && (
-            <div className="hero__actions">
-              {current.actions.map((label) => (
-                <button key={label} type="button" className="ghost-link">
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
+      <div className="hero__media">
+        <img src={current.image} alt="" />
+        <div className="hero__shade" />
+        <div className="hero__inner">
+          <div className="hero__copy">
+            <h1>{current.title}</h1>
+            {current.actions && (
+              <div className="hero__actions">
+                {current.actions.map((label) => (
+                  <button key={label} type="button" className="ghost-link">
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="hero__years" aria-hidden="true" />
-      </div>
-      <div className="hero__dots">
-        {SLIDES.map((item, index) => (
-          <button
-            key={item.title}
-            type="button"
-            className={index === slide ? "is-on" : ""}
-            aria-label={`Slide ${index + 1}`}
-            onClick={() => setSlide(index)}
-          />
-        ))}
+        <div className="hero__dots">
+          {SLIDES.map((item, index) => (
+            <button
+              key={item.title}
+              type="button"
+              className={index === slide ? "is-on" : ""}
+              aria-label={`Slide ${index + 1}`}
+              onClick={() => setSlide(index)}
+            />
+          ))}
+        </div>
       </div>
       <div className="stats">
         {STATS.map((item) => (

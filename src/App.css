@@ -18,7 +18,7 @@ main {
 .header__bar {
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto;
-  min-height: 78px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -53,32 +53,12 @@ main {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--white);
 }
 
-.logo__mark {
-  width: 36px;
-  height: 36px;
-}
-
-.logo__text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-}
-
-.logo__text strong {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-}
-
-.logo__text small {
-  margin-top: 3px;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.78);
+.logo img {
+  display: block;
+  height: 42px;
+  width: auto;
 }
 
 .nav {
@@ -121,9 +101,9 @@ main {
 }
 
 .search-btn {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  padding: 8px 12px;
 }
 
 .search-btn svg,
@@ -138,10 +118,10 @@ main {
 
 .login__btn {
   background: var(--lime);
-  color: #111;
-  border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: 700;
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-weight: 600;
 }
 
 .login__btn svg.is-open {
@@ -197,7 +177,11 @@ main {
   background: var(--white);
 }
 
-.search-panel {
+  .nav {
+    top: 100px;
+  }
+
+  .search-panel {
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto 16px;
   display: flex;
@@ -223,22 +207,40 @@ main {
 .hero {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(4, 22, 42, 0.35) 0%, rgba(4, 22, 42, 0.08) 42%, transparent 70%),
-    url("/banner-hero.png") center / cover no-repeat;
   color: var(--white);
-  padding-bottom: 90px;
+  padding-bottom: 70px;
+  background: var(--navy);
+}
+
+.hero__media {
+  position: relative;
+  min-height: 560px;
+}
+
+.hero__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 45, 83, 0) 0%, rgba(0, 47, 85, 0.42) 32%, rgb(0, 47, 85) 88%);
 }
 
 .hero__inner {
+  position: relative;
+  z-index: 1;
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto;
-  min-height: 520px;
-  display: grid;
-  grid-template-columns: 1fr 0.7fr;
+  min-height: 560px;
+  display: flex;
   align-items: center;
-  gap: 40px;
-  padding: 72px 0 48px;
+  padding: 48px 0 80px;
 }
 
 .hero__copy h1 {
@@ -270,10 +272,15 @@ main {
 }
 
 .hero__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28px;
+  z-index: 1;
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 8px 0 28px;
+  margin: 0;
 }
 
 .hero__dots button {
@@ -387,6 +394,7 @@ main {
   height: 42px;
   flex-shrink: 0;
   color: #c6b04a;
+  object-fit: contain;
 }
 
 .work {
@@ -484,11 +492,11 @@ main {
 
 .cta {
   background: var(--lime);
-  color: #111;
-  border-radius: 14px;
-  padding: 16px 28px;
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 14px 24px;
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .cta:hover,
@@ -773,7 +781,7 @@ main {
     position: absolute;
     left: 20px;
     right: 20px;
-    top: 78px;
+    top: 100px;
     padding: 16px;
     border-radius: 16px;
     background: #06233f;
@@ -821,17 +829,8 @@ main {
     min-height: 70px;
   }
 
-  .logo__mark {
-    width: 28px;
-    height: 28px;
-  }
-
-  .logo__text strong {
-    font-size: 1rem;
-  }
-
-  .logo__text small {
-    display: none;
+  .logo img {
+    height: 32px;
   }
 
   .header__actions {

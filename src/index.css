@@ -1,19 +1,18 @@
 :root {
-  --navy: #04233f;
-  --navy-deep: #021526;
-  --navy-header: #041c34;
-  --navy-hero: #052847;
-  --lime: #d6e34c;
-  --lime-hover: #e4ef6a;
-  --ink: #16345a;
-  --ink-soft: #3d5a7a;
-  --olive: #b7a23a;
+  --navy: #002f55;
+  --navy-deep: #001c36;
+  --navy-header: #002f55;
+  --navy-hero: #002f55;
+  --lime: #d2d655;
+  --lime-hover: #dfe36a;
+  --ink: #002d53;
+  --ink-soft: #5b7388;
+  --olive: #c6b04a;
   --white: #ffffff;
-  --line: #e6edf4;
-  --shadow: 0 24px 60px rgba(2, 16, 32, 0.28);
-  --font-display: "Outfit", "Segoe UI", sans-serif;
-  --font-body: "Manrope", "Segoe UI", sans-serif;
-  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --line: #d7e4f0;
+  --shadow: 0 16px 40px rgba(8, 28, 52, 0.12);
+  --font-display: "Space Grotesk", Inter, sans-serif;
+  --font-body: Inter, "Segoe UI", sans-serif;
   --container: 1180px;
 }
 
