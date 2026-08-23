@@ -3,11 +3,11 @@ import { useState } from "react"
 const SLIDES = [
   {
     title: "Acompañando decisiones que importan",
-    image: "/banner-hero.png",
+    image: "/banner-original.png",
   },
   {
     title: "Descargue sus certificados tributarios",
-    image: "/banner-cert.jpg",
+    image: "/banner-original.png",
     actions: ["Descargar certificados", "Calendario tributario"],
   },
 ]
