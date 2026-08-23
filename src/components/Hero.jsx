@@ -3,7 +3,6 @@ import { useState } from "react"
 const SLIDES = [
   {
     title: "Acompañando decisiones que importan",
-    mark: true,
   },
   {
     title: "Descargue sus certificados tributarios",
@@ -40,12 +39,7 @@ export default function Hero() {
             </div>
           )}
         </div>
-        {current.mark && (
-          <div className="hero__years" aria-hidden="true">
-            <span>40</span>
-            <em>años</em>
-          </div>
-        )}
+        <div className="hero__years" aria-hidden="true" />
       </div>
       <div className="hero__dots">
         {SLIDES.map((item, index) => (

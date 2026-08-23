@@ -223,7 +223,9 @@ main {
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #041c34 0%, #0a2744 55%, #12324f 100%);
+  background:
+    linear-gradient(90deg, rgba(4, 22, 42, 0.35) 0%, rgba(4, 22, 42, 0.08) 42%, transparent 70%),
+    url("/banner-hero.png") center / cover no-repeat;
   color: var(--white);
   padding-bottom: 90px;
 }
@@ -231,7 +233,7 @@ main {
 .hero__inner {
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto;
-  min-height: 420px;
+  min-height: 520px;
   display: grid;
   grid-template-columns: 1fr 0.7fr;
   align-items: center;
@@ -264,22 +266,7 @@ main {
 }
 
 .hero__years {
-  justify-self: end;
-  text-align: right;
-  line-height: 0.75;
-}
-
-.hero__years span {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(7rem, 14vw, 11rem);
-  font-weight: 500;
-}
-
-.hero__years em {
-  font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
-  font-style: italic;
+  min-height: 220px;
 }
 
 .hero__dots {
@@ -810,10 +797,6 @@ main {
   .contact__grid,
   .footer__inner {
     grid-template-columns: 1fr;
-  }
-
-  .hero__years {
-    justify-self: start;
   }
 
   .phones {
