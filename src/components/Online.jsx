@@ -1,5 +1,3 @@
-import Phones from "./Phones"
-
 export default function Online() {
   return (
     <section className="online">
@@ -15,7 +13,6 @@ export default function Online() {
             Ingrese ahora
           </button>
         </div>
-        <Phones />
       </div>
     </section>
   )
