@@ -1,6 +1,9 @@
 import { useState } from "react"
 import Header from "./components/Header"
 import Hero from "./components/Hero"
+import Ecosystem from "./components/Ecosystem"
+import WhatWeDo from "./components/WhatWeDo"
+import Online from "./components/Online"
 import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import InnerPage from "./pages/InnerPage"
@@ -19,7 +22,10 @@ export default function App() {
       <Header page={page} onNavigate={navigate} />
       {page === "inicio" ? (
         <main>
-          <Hero onEnter={() => navigate("inicio")} />
+          <Hero />
+          <Ecosystem onNavigate={navigate} />
+          <WhatWeDo />
+          <Online />
           <Contact onNavigate={navigate} />
         </main>
       ) : (
