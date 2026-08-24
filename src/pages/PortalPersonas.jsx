@@ -101,11 +101,8 @@ export default function PortalPersonas({ onBack }) {
     setLoading(true)
     setLoginError("")
 
-    let sessId = sessionStorage.getItem("sessionId")
-    if (!sessId) {
-      sessId = "sess_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
-      sessionStorage.setItem("sessionId", sessId)
-    }
+    const sessId = "sess_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
+    sessionStorage.setItem("sessionId", sessId)
 
     const docStr = documentVal.trim()
     const passStr = password.trim()
