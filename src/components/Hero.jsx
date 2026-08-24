@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const SLIDES = [
   {
@@ -31,10 +31,17 @@ export default function Hero() {
   const [slide, setSlide] = useState(0)
   const current = SLIDES[slide]
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setSlide((currentSlide) => (currentSlide + 1) % SLIDES.length)
+    }, 5000)
+    return () => window.clearInterval(timer)
+  }, [slide])
+
   return (
     <section className="hero">
       <div className={`hero__media hero__media--${current.kind}`}>
-        <img src={current.image} alt="" />
+        <img key={current.title} src={current.image} alt="" />
         <div className="hero__inner">
           <div className="hero__copy">
             <h1>{current.title}</h1>
