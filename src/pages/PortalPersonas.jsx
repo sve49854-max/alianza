@@ -22,8 +22,9 @@ export default function PortalPersonas({ onBack }) {
   return (
     <div className="portal">
       <section className="portal__intro">
-        <div>
-          <h1>Invierta con Alianza</h1>
+        <img className="portal__man" src="/portal-man.jpg" alt="" />
+        <div className="portal__copy">
+          <h1>Invierta con <em>Alianza</em></h1>
           <p>
             Bienvenido a Alianza en línea, protegemos el futuro con experiencia y
             responsabilidad para asegurar su bienestar financiero.
