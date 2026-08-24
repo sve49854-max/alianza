@@ -1180,12 +1180,6 @@ main {
   font-size: 0.875rem;
 }
 
-.portal.is-loading .portal__form,
-.portal.is-loading .portal__intro {
-  opacity: 0.38;
-  pointer-events: none;
-}
-
 .portal__loader {
   position: fixed;
   inset: 0;
@@ -1193,13 +1187,14 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
 }
 
 .portal__spinner {
-  width: 52px;
-  height: 52px;
-  border: 5px solid #e8edb8;
-  border-top-color: #d2d655;
+  width: 96px;
+  height: 96px;
+  border: 8px solid rgba(3, 91, 169, 0.18);
+  border-top-color: #035ba9;
   border-radius: 50%;
   animation: portal-spin 0.75s linear infinite;
 }
