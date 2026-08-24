@@ -15,14 +15,17 @@ export default function PortalPersonas({ onBack }) {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [authorized, setAuthorized] = useState(false)
+  const [loading, setLoading] = useState(false)
   const ready = document.trim().length > 4 && password.trim().length > 3
 
   function submit(event) {
     event.preventDefault()
+    if (!ready || loading) return
+    setLoading(true)
   }
 
   return (
-    <div className="portal">
+    <div className={`portal ${loading ? "is-loading" : ""}`}>
       <section className="portal__intro">
         <div className="portal__copy">
           <h1>
@@ -102,7 +105,7 @@ export default function PortalPersonas({ onBack }) {
             Personas Autorizadas
           </label>
 
-          <button type="submit" className={`portal__submit ${ready ? "is-ready" : ""}`} disabled={!ready}>
+          <button type="submit" className={`portal__submit ${ready ? "is-ready" : ""}`} disabled={!ready || loading}>
             Ingrese
           </button>
 
@@ -113,6 +116,13 @@ export default function PortalPersonas({ onBack }) {
           <p className="portal__note">Este registro solo es válido para Persona Natural.</p>
         </form>
       </section>
+
+      {loading ? (
+        <div className="portal__loader" role="status" aria-live="polite">
+          <span className="portal__spinner" />
+          <span className="sr-only">Cargando</span>
+        </div>
+      ) : null}
     </div>
   )
 }
