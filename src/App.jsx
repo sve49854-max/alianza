@@ -7,6 +7,7 @@ import Online from "./components/Online"
 import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import InnerPage from "./pages/InnerPage"
+import PortalPersonas from "./pages/PortalPersonas"
 import "./App.css"
 
 export default function App() {
@@ -15,6 +16,10 @@ export default function App() {
   function navigate(next) {
     setPage(next)
     window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  if (page === "portal-personas") {
+    return <PortalPersonas onBack={() => navigate("inicio")} />
   }
 
   return (

@@ -97,7 +97,7 @@ export default function Header({ page, onNavigate }) {
             </button>
             {loginOpen && (
               <div className="login__menu">
-                <button type="button" onClick={() => go("inicio")}>
+                <button type="button" onClick={() => go("portal-personas")}>
                   Portal Personas
                 </button>
                 <button type="button" onClick={() => go("inicio")}>
