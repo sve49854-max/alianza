@@ -919,6 +919,18 @@ main {
     padding: 0;
   }
 
+  .login {
+    min-width: 0;
+  }
+
+  .login__menu {
+    left: auto;
+    right: 0;
+    min-width: 188px;
+    width: max-content;
+    z-index: 30;
+  }
+
   .search-btn span,
   .login__btn span,
   .login__btn svg:last-child {
@@ -928,6 +940,12 @@ main {
   .hero__inner {
     min-height: auto;
     padding-top: 36px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .hero__copy h1 {
+    font-size: 1.7rem;
   }
 
   .phones {
@@ -1231,23 +1249,97 @@ main {
   border: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
   .portal {
     grid-template-columns: 1fr;
+    min-height: 100dvh;
   }
 
   .portal__intro {
-    min-height: 220px;
-    padding: 36px 24px;
+    display: none;
   }
 
   .portal__form {
-    min-height: auto;
-    padding-bottom: 32px;
+    min-height: 100dvh;
+    padding: 0 16px calc(28px + env(safe-area-inset-bottom));
   }
 
   .portal__top {
     height: auto;
-    padding: 20px 16px;
+    min-height: 72px;
+    gap: 12px;
+    padding: calc(12px + env(safe-area-inset-top)) 4px 12px;
+  }
+
+  .portal__brand {
+    width: auto;
+    min-width: 0;
+  }
+
+  .portal__brand img:first-child {
+    height: 34px;
+  }
+
+  .portal__brand img:last-child {
+    height: 26px;
+  }
+
+  .portal__top nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px 12px;
+  }
+
+  .portal__top nav button {
+    font-size: 0.75rem;
+    min-height: 32px;
+  }
+
+  .portal__form,
+  .portal__card {
+    width: 100%;
+  }
+
+  .portal__card {
+    max-width: 500px;
+    margin: 12px auto 0;
+  }
+
+  .portal__spinner {
+    width: 72px;
+    height: 72px;
+    border-width: 6px;
+  }
+}
+
+@media (max-width: 767px) {
+  .portal__form {
+    padding: 0 16px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .portal__top nav button:first-child {
+    display: none;
+  }
+
+  .portal__card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+
+  .portal__card input,
+  .portal__card select,
+  .portal__pass input {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .portal__submit,
+  .portal__register {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .portal__check {
+    min-height: 44px;
   }
 }
