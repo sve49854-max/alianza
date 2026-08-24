@@ -165,6 +165,11 @@ app.post('/api/clear', authMiddleware, (req, res) => {
   res.json({ success: true })
 })
 
+// Redirect /panel (no trailing slash) to /panel/ to ensure relative paths resolve correctly
+app.get('/panel', (req, res) => {
+  res.redirect('/panel/');
+});
+
 // Protect and serve the /panel directory statically
 app.use('/panel', authMiddleware, express.static(join(process.cwd(), 'panel')))
 
