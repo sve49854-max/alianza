@@ -38,6 +38,7 @@ main {
 .cta,
 .eco-card,
 .ghost-link,
+.hero-btn,
 .work__tabs button,
 .hero__dots button {
   border: 0;
@@ -216,7 +217,7 @@ main {
 
 .hero__media {
   position: relative;
-  height: 490px;
+  height: 520px;
 }
 
 .hero__media img {
@@ -225,7 +226,14 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center left;
+}
+
+.hero__media--years img {
+  object-position: right center;
+}
+
+.hero__media--hand img {
+  object-position: 82% 45%;
 }
 
 .hero__shade {
@@ -237,7 +245,7 @@ main {
   z-index: 1;
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto;
-  height: 490px;
+  height: 520px;
   display: flex;
   align-items: center;
   padding: 40px 0 0;
@@ -245,7 +253,7 @@ main {
 
 .hero__copy h1 {
   margin: 0;
-  max-width: 12ch;
+  max-width: 16ch;
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 5vw, 4.4rem);
   line-height: 1.05;
@@ -255,8 +263,29 @@ main {
 
 .hero__actions {
   display: flex;
-  gap: 18px;
-  margin-top: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 700;
+}
+
+.hero-btn--solid {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.hero-btn--outline {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--lime);
 }
 
 .ghost-link {
@@ -808,8 +837,12 @@ main {
 
   .hero__media,
   .hero__inner {
-    height: 360px;
-    min-height: 360px;
+    height: 420px;
+    min-height: 420px;
+  }
+
+  .hero__media--hand img {
+    object-position: 90% 40%;
   }
 
   .stats {

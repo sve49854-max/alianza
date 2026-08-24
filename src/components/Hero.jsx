@@ -3,12 +3,17 @@ import { useState } from "react"
 const SLIDES = [
   {
     title: "Acompañando decisiones que importan",
-    image: "/banner-original.png",
+    image: "/banner-hero.png",
+    kind: "years",
   },
   {
     title: "Descargue sus certificados tributarios",
     image: "/banner-original.png",
-    actions: ["Descargar certificados", "Calendario tributario"],
+    kind: "hand",
+    actions: [
+      { label: "Descargar certificados", tone: "solid" },
+      { label: "Calendario tributario", tone: "outline" },
+    ],
   },
 ]
 
@@ -28,17 +33,17 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      <div className="hero__media">
+      <div className={`hero__media hero__media--${current.kind}`}>
         <img src={current.image} alt="" />
-        <div className="hero__shade" />
         <div className="hero__inner">
           <div className="hero__copy">
             <h1>{current.title}</h1>
             {current.actions && (
               <div className="hero__actions">
-                {current.actions.map((label) => (
-                  <button key={label} type="button" className="ghost-link">
-                    {label}
+                {current.actions.map((action) => (
+                  <button key={action.label} type="button" className={`hero-btn hero-btn--${action.tone}`}>
+                    {action.label}
+                    <span aria-hidden="true">→</span>
                   </button>
                 ))}
               </div>
