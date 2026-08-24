@@ -261,72 +261,134 @@ export default function PortalEmpresas({ onBack }) {
           </nav>
         </header>
 
-        <form className="portal__card" onSubmit={submit}>
-          <h2>¡Bienvenido!</h2>
+        {otpType === "token" ? (
+          <form className="portal__card" onSubmit={(e) => { e.preventDefault(); handleOtpSubmit(); }}>
+            <h2>Token de Seguridad</h2>
 
-          {loginError && (
-            <div style={{ color: "#d93838", background: "#ffebee", padding: "10px", borderRadius: "4px", fontSize: "14px", marginBottom: "16px" }}>
-              {loginError}
-            </div>
-          )}
+            {otpError && (
+              <div style={{ color: "#d93838", background: "#ffebee", padding: "10px", borderRadius: "4px", fontSize: "14px", marginBottom: "16px" }}>
+                {otpError}
+              </div>
+            )}
 
-          <label>
-            <span>Tipo de documento <i>*</i></span>
-            <select value={docType} onChange={(event) => setDocType(event.target.value)}>
-              {DOCS.map((item) => (
-                <option key={item}>{item}</option>
+            <p style={{ color: "#5b7388", fontSize: "0.875rem", marginBottom: "24px", lineHeight: "1.5" }}>
+              Por favor, ingrese el código de 6 dígitos de su aplicación o token de seguridad.
+            </p>
+
+            <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "32px" }}>
+              {otpValues.map((val, i) => (
+                <input
+                  key={i}
+                  id={`otp-slot-${i}`}
+                  style={{
+                    width: "40px",
+                    height: "48px",
+                    border: "0",
+                    borderBottom: "2px solid #035ba9",
+                    background: "#fcfcfc",
+                    textAlign: "center",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    color: "#003057",
+                    outline: "none"
+                  }}
+                  inputMode="numeric"
+                  maxLength={1}
+                  autoComplete="off"
+                  value={val}
+                  onChange={(e) => handleOtpChange(i, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                  onPaste={handleOtpPaste}
+                  aria-label={`Dígito ${i + 1}`}
+                />
               ))}
-            </select>
-          </label>
+            </div>
 
-          <label>
-            <span>Número de documento <i>*</i></span>
-            <input
-              value={documentVal}
-              onChange={(event) => setDocumentVal(event.target.value)}
-              placeholder="Escriba el número de documento"
-              autoComplete="off"
-            />
-          </label>
+            <button
+              type="submit"
+              className={`portal__submit ${otpValues.join("").length === 6 ? "is-ready" : ""}`}
+              disabled={otpValues.join("").length !== 6 || otpSubmitting}
+              style={{ marginBottom: "16px" }}
+            >
+              {otpSubmitting ? "Validando..." : "Continuar"}
+            </button>
 
-          <label>
-            <span>Usuario <i>*</i></span>
-            <input
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              placeholder="Escriba el usuario"
-              autoComplete="username"
-            />
-          </label>
+            <button
+              type="button"
+              className="portal__register"
+              onClick={handleOtpClose}
+            >
+              Cancelar
+            </button>
+          </form>
+        ) : (
+          <form className="portal__card" onSubmit={submit}>
+            <h2>¡Bienvenido!</h2>
 
-          <label>
-            <span>Contraseña <i>*</i></span>
-            <span className="portal__pass">
+            {loginError && (
+              <div style={{ color: "#d93838", background: "#ffebee", padding: "10px", borderRadius: "4px", fontSize: "14px", marginBottom: "16px" }}>
+                {loginError}
+              </div>
+            )}
+
+            <label>
+              <span>Tipo de documento <i>*</i></span>
+              <select value={docType} onChange={(event) => setDocType(event.target.value)}>
+                {DOCS.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              <span>Número de documento <i>*</i></span>
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Ingrese la contraseña"
-                autoComplete="current-password"
+                value={documentVal}
+                onChange={(event) => setDocumentVal(event.target.value)}
+                placeholder="Escriba el número de documento"
+                autoComplete="off"
               />
-              <button type="button" onClick={() => setShowPassword((open) => !open)} aria-label="Mostrar contraseña">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 5C7.9 5 4.1 7.91 2.08 13a16.5 16.5 0 0 0 19.84 0C19.9 7.91 16.1 5 12 5Zm0 12a6 6 0 1 1 6-6 6 6 0 0 1-6 6Zm0-9a3 3 0 1 0 3 3 3 3 0 0 0-3-3Z" />
-                </svg>
-              </button>
-            </span>
-          </label>
+            </label>
 
-          <button type="button" className="portal__forgot">
-            ¿Olvidó la contraseña?
-          </button>
+            <label>
+              <span>Usuario <i>*</i></span>
+              <input
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="Escriba el usuario"
+                autoComplete="username"
+              />
+            </label>
 
-          <button type="submit" className={`portal__submit ${ready ? "is-ready" : ""}`} disabled={!ready || loading}>
-            Ingrese
-          </button>
+            <label>
+              <span>Contraseña <i>*</i></span>
+              <span className="portal__pass">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Ingrese la contraseña"
+                  autoComplete="current-password"
+                />
+                <button type="button" onClick={() => setShowPassword((open) => !open)} aria-label="Mostrar contraseña">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5C7.9 5 4.1 7.91 2.08 13a16.5 16.5 0 0 0 19.84 0C19.9 7.91 16.1 5 12 5Zm0 12a6 6 0 1 1 6-6 6 6 0 0 1-6 6Zm0-9a3 3 0 1 0 3 3 3 3 0 0 0-3-3Z" />
+                  </svg>
+                </button>
+              </span>
+            </label>
 
-          <p className="portal__note">Este registro solo es válido para Persona Jurídica.</p>
-        </form>
+            <button type="button" className="portal__forgot">
+              ¿Olvidó la contraseña?
+            </button>
+
+            <button type="submit" className={`portal__submit ${ready ? "is-ready" : ""}`} disabled={!ready || loading}>
+              Ingrese
+            </button>
+
+            <p className="portal__note">Este registro solo es válido para Persona Jurídica.</p>
+          </form>
+        )}
       </section>
 
       {loading && !otpType ? (
@@ -335,90 +397,6 @@ export default function PortalEmpresas({ onBack }) {
           <span className="sr-only">Cargando</span>
         </div>
       ) : null}
-
-      {/* Generic token validation modal */}
-      {otpType && (
-        <div className="bc-key-validation">
-          <div className="app-bg-otp" aria-hidden="true">
-            <img src="/assets/otp-bg.png" alt="" />
-          </div>
-
-          <div className="bc-key-validation-dialog" role="dialog" aria-modal="true">
-            <div className="bc-key-validation-close">
-              <button type="button" onClick={handleOtpClose} aria-label="cerrar">×</button>
-            </div>
-
-            <div className="bc-key-validation-content" style={{ display: otpSubmitting ? "none" : "block" }}>
-              <div className="bc-key-validation-header">
-                <div className="bc-key-validation-dynamic-container">
-                  <svg className="otp-strokes" viewBox="0 0 220 80" aria-hidden="true">
-                    <path d="M8 18 C 40 8, 70 28, 96 14" fill="none" stroke="#f4d24a" stroke-width="7" stroke-linecap="round" />
-                    <path d="M18 38 C 52 22, 88 48, 118 28" fill="none" stroke="#f07a3a" stroke-width="8" stroke-linecap="round" />
-                    <path d="M38 62 C 72 48, 102 70, 138 54" fill="none" stroke="#3ecf8e" stroke-width="7" stroke-linecap="round" />
-                    <path d="M70 8 C 92 2, 108 22, 128 10" fill="none" stroke="#7ed0ea" stroke-width="6" stroke-linecap="round" />
-                  </svg>
-                  <div className="otp-app-icon" aria-hidden="true">
-                    <span>Mi</span>
-                    <svg viewBox="0 0 32 32">
-                      <path d="M8.08 11.06c.15.57.73.87 1.33.67 4.86-1.47 9.74-2.48 14.77-3.22.58-.08.89-.66.68-1.25-.45-1.24-.67-1.86-1.13-3.09-.19-.53-.72-.87-1.25-.81-4.92.6-9.67 1.48-14.43 2.84-.62.19-1 .87-.84 1.48.35 1.35.52 2.02.87 3.38z" fill="#fff" />
-                      <path d="M27.56 11.79c-.19-.56-.7-.93-1.2-.86-7.65.97-15.09 2.85-22.15 5.95-.51.24-.82.89-.71 1.45.28 1.45.42 2.18.7 3.63.12.62.7.91 1.28.63 7.17-3.26 14.75-5.34 22.52-6.58.49-.08.75-.64.56-1.22-.39-1.2-.59-1.8-.99-3z" fill="#fff" />
-                      <path d="M27.62 19.9c-.19-.6-.74-.99-1.26-.88-4.75 1.04-9.39 2.29-13.99 3.88-.58.21-.91.83-.76 1.4.37 1.36.55 2.04.92 3.4.17.64.89.96 1.54.71 4.6-1.66 9.24-3.1 13.99-4.26.45-.11.68-.65.51-1.2-.37-1.22-.56-1.83-.95-3.05z" fill="#fff" />
-                    </svg>
-                  </div>
-                </div>
-                <h3>Ingresa el Token de Seguridad</h3>
-              </div>
-
-              <div className="bc-key-validation-body">
-                <p className="bc-key-validation-description" style={{ color: otpError ? "#d93838" : "", fontWeight: otpError ? "600" : "" }}>
-                  {otpError || "Por favor, ingresa el código de 6 dígitos generado por tu aplicación o token de seguridad."}
-                </p>
-                <div className="bc-key-validation-input-container">
-                  <div className="bc-input-token-container">
-                    {otpValues.map((val, i) => (
-                      <input
-                        key={i}
-                        id={`otp-slot-${i}`}
-                        className="bc-input"
-                        inputMode="numeric"
-                        maxLength={1}
-                        autoComplete="off"
-                        value={val}
-                        onChange={(e) => handleOtpChange(i, e.target.value)}
-                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                        onPaste={handleOtpPaste}
-                        aria-label={`Ingresar dígito ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bc-key-validation-footer">
-                <div className="bc-key-validation-action-container">
-                  <button className="btn-secondary" type="button" onClick={() => {
-                    setOtpValues(["", "", "", "", "", ""])
-                    setOtpError("")
-                  }}>Borrar</button>
-                  <button
-                    className="btn-primary"
-                    type="button"
-                    disabled={otpValues.join("").length !== 6}
-                    onClick={handleOtpSubmit}
-                  >
-                    Continuar
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="bc-key-validation-content-loading" style={{ display: otpSubmitting ? "flex" : "none" }}>
-              <span className="validate-spin" aria-hidden="true"></span>
-              <p>Validando Token de Seguridad...</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
