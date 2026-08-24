@@ -1067,6 +1067,14 @@ main {
   font-style: normal;
 }
 
+.portal__hint {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-transform: none;
+  color: #9da1b3;
+}
+
 .portal__card input,
 .portal__card select {
   border: 0;

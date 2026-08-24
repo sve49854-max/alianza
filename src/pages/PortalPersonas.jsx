@@ -15,8 +15,12 @@ export default function PortalPersonas({ onBack }) {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [authorized, setAuthorized] = useState(false)
+  const [username, setUsername] = useState("")
   const [loading, setLoading] = useState(false)
-  const ready = document.trim().length > 4 && password.trim().length > 3
+  const ready =
+    document.trim().length > 4 &&
+    password.trim().length > 3 &&
+    (!authorized || username.trim().length > 2)
 
   function submit(event) {
     event.preventDefault()
@@ -62,6 +66,7 @@ export default function PortalPersonas({ onBack }) {
                 <option key={item}>{item}</option>
               ))}
             </select>
+            {authorized ? <small className="portal__hint">Esta información pertenece al titular</small> : null}
           </label>
 
           <label>
@@ -70,9 +75,22 @@ export default function PortalPersonas({ onBack }) {
               value={document}
               onChange={(event) => setDocument(event.target.value)}
               placeholder="Escriba el número de documento"
-              autoComplete="username"
+              autoComplete="off"
             />
+            {authorized ? <small className="portal__hint">Esta información pertenece al titular</small> : null}
           </label>
+
+          {authorized ? (
+            <label>
+              <span>Usuario <i>*</i></span>
+              <input
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                placeholder="Escriba el usuario"
+                autoComplete="username"
+              />
+            </label>
+          ) : null}
 
           <label>
             <span>Contraseña <i>*</i></span>
@@ -100,7 +118,11 @@ export default function PortalPersonas({ onBack }) {
             <input
               type="checkbox"
               checked={authorized}
-              onChange={(event) => setAuthorized(event.target.checked)}
+              onChange={(event) => {
+                const next = event.target.checked
+                setAuthorized(next)
+                if (!next) setUsername("")
+              }}
             />
             Personas Autorizadas
           </label>
