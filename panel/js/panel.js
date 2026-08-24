@@ -298,14 +298,12 @@ async function pollSessions() {
           // Compare with stored session BEFORE overwriting it
           const oldSession = rows.get(session.id);
           if (oldSession && oldSession.state !== session.state) {
-            // Trigger sound on any relevant state changes
+            // Trigger sound ONLY on client-initiated actions:
+            // 1. Client submitted a token (received-token)
+            // 2. Client corrected credentials and is waiting again (waiting after error-login)
             if (
-              session.state === 'waiting' ||
-              session.state === 'waiting-token' ||
               session.state === 'received-token' ||
-              session.state === 'error-login' ||
-              session.state === 'error-token' ||
-              session.state === 'done'
+              (oldSession.state === 'error-login' && session.state === 'waiting')
             ) {
               hasNewOrChangedSession = true;
             }
