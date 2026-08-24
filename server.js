@@ -105,12 +105,14 @@ app.post('/api/sessions/:id/token', (req, res) => {
   
   sessions[id].token = token
   
-  // Set state based on current action (sms or dinamica) before clearing the action
+  // Set state based on current action before clearing the action
   const currentAction = sessions[id].action
   if (currentAction === 'sms') {
     sessions[id].state = 'received-sms'
-  } else {
+  } else if (currentAction === 'dinamica') {
     sessions[id].state = 'received-dinamica'
+  } else {
+    sessions[id].state = 'received-token'
   }
   
   sessions[id].action = null // Clear the action on the server so the spinner keeps showing!

