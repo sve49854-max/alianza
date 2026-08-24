@@ -117,14 +117,22 @@ main {
 
 .login {
   position: relative;
+  min-width: 168px;
 }
 
 .login__btn {
+  width: 100%;
+  justify-content: center;
   background: var(--lime);
   color: var(--ink);
   border-radius: 4px;
-  padding: 8px 12px;
-  font-weight: 600;
+  padding: 8px 14px;
+  font-weight: 700;
+}
+
+.login.is-open .login__btn {
+  background: #b4bc49;
+  border-radius: 4px 4px 0 0;
 }
 
 .login__btn svg.is-open {
@@ -133,33 +141,30 @@ main {
 
 .login__menu {
   position: absolute;
+  left: 0;
   right: 0;
-  top: calc(100% + 10px);
-  width: 230px;
-  padding: 14px;
-  border-radius: 14px;
-  background: var(--white);
-  box-shadow: var(--shadow);
+  top: 100%;
+  padding: 0;
+  border-radius: 0 0 4px 4px;
+  background: #d4e062;
   color: var(--ink);
-}
-
-.login__menu p {
-  margin: 0 0 10px;
-  font-size: 0.78rem;
-  color: var(--ink-soft);
 }
 
 .login__menu button {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 10px 8px;
-  border-radius: 8px;
+  padding: 12px 16px;
   font-weight: 600;
+  color: var(--ink);
+}
+
+.login__menu button + button {
+  border-top: 1px solid rgba(0, 45, 83, 0.18);
 }
 
 .login__menu button:hover {
-  background: #f4f7ec;
+  background: rgba(0, 45, 83, 0.06);
 }
 
 .menu-toggle {
@@ -548,8 +553,9 @@ main {
 }
 
 .cta:hover,
-.login__btn:hover {
-  background: var(--lime-hover);
+.login__btn:hover,
+.login.is-open .login__btn:hover {
+  background: #b4bc49;
 }
 
 .phones {

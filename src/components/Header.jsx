@@ -81,7 +81,7 @@ export default function Header({ page, onNavigate }) {
             <span>Buscar</span>
           </button>
 
-          <div className="login" ref={loginRef}>
+          <div className={`login ${loginOpen ? "is-open" : ""}`} ref={loginRef}>
             <button
               type="button"
               className="login__btn"
@@ -97,7 +97,6 @@ export default function Header({ page, onNavigate }) {
             </button>
             {loginOpen && (
               <div className="login__menu">
-                <p>Acceda a Alianza en línea</p>
                 <button type="button" onClick={() => go("inicio")}>
                   Portal Personas
                 </button>
