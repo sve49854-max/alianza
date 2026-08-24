@@ -148,7 +148,6 @@ function createRow(row) {
 
   tr.querySelector('[data-action="error-login"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-login', 'error-login')
-    playErrorSound()
   })
   tr.querySelector('[data-action="token"]')?.addEventListener('click', () => {
     const current = rows.get(row.id)
@@ -160,11 +159,9 @@ function createRow(row) {
   })
   tr.querySelector('[data-action="error-token"]')?.addEventListener('click', () => {
     setRowState(row.id, 'error-token', 'error-token')
-    playErrorSound()
   })
   tr.querySelector('[data-action="done"]')?.addEventListener('click', () => {
     setRowState(row.id, 'done', 'done')
-    playSuccessSound()
   })
 
   tr.querySelectorAll('td.copyable').forEach((td) => {
