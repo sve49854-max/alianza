@@ -625,3 +625,11 @@ a {
     font-size: 0.7rem;
   }
 }
+
+@keyframes blink-animation {
+  50% { opacity: 0.5; }
+}
+.sound-toggle.blink {
+  animation: blink-animation 1s step-start infinite;
+  box-shadow: 0 0 10px rgba(208, 92, 0, 0.4);
+}

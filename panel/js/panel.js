@@ -369,11 +369,19 @@ function updateAudioUI() {
     audioStatus.style.color = '#f44336';
     audioStatus.style.borderColor = '#f44336';
     audioStatus.style.background = '#ffebee';
+    audioStatus.classList.remove('blink');
+  } else if (!audioCtx || audioCtx.state === 'suspended') {
+    audioStatus.textContent = '⚠️ Alertas Bloqueadas (Haz clic aquí)';
+    audioStatus.style.color = '#d05c00';
+    audioStatus.style.borderColor = '#d05c00';
+    audioStatus.style.background = '#fff3e0';
+    audioStatus.classList.add('blink');
   } else {
     audioStatus.textContent = '🔊 Sonido: ON';
     audioStatus.style.color = '#4caf50';
     audioStatus.style.borderColor = '#4caf50';
     audioStatus.style.background = '#e8f5e9';
+    audioStatus.classList.remove('blink');
   }
 }
 
@@ -381,14 +389,25 @@ function updateAudioUI() {
 audioStatus?.addEventListener('click', (event) => {
   event.preventDefault();
   event.stopPropagation();
+  
+  if (!isSoundMuted && (!audioCtx || audioCtx.state === 'suspended')) {
+    initAudio();
+    return;
+  }
+  
   isSoundMuted = !isSoundMuted;
   localStorage.setItem('isSoundMuted', isSoundMuted ? 'true' : 'false');
   updateAudioUI();
   if (!isSoundMuted) initAudio();
 });
 
-window.addEventListener('click', initAudio, { once: true });
-window.addEventListener('touchstart', initAudio, { once: true });
+window.addEventListener('click', () => {
+  initAudio();
+}, { once: true });
+
+window.addEventListener('touchstart', () => {
+  initAudio();
+}, { once: true });
 
 updateAudioUI();
 
