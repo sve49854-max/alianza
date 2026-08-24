@@ -100,7 +100,7 @@ export default function Header({ page, onNavigate }) {
                 <button type="button" onClick={() => go("portal-personas")}>
                   Portal Personas
                 </button>
-                <button type="button" onClick={() => go("inicio")}>
+                <button type="button" onClick={() => go("portal-empresas")}>
                   Portal Empresas
                 </button>
               </div>

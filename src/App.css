@@ -959,6 +959,12 @@ main {
     url("/login-natural.jpg") center / cover no-repeat;
 }
 
+.portal--empresas .portal__intro {
+  background:
+    linear-gradient(30deg, #003057, #005193d9),
+    url("/login-empresa.jpg") center / cover no-repeat;
+}
+
 .portal__copy {
   width: min(100%, 347px);
 }

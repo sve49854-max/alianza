@@ -8,6 +8,7 @@ import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import InnerPage from "./pages/InnerPage"
 import PortalPersonas from "./pages/PortalPersonas"
+import PortalEmpresas from "./pages/PortalEmpresas"
 import "./App.css"
 
 export default function App() {
@@ -20,6 +21,10 @@ export default function App() {
 
   if (page === "portal-personas") {
     return <PortalPersonas onBack={() => navigate("inicio")} />
+  }
+
+  if (page === "portal-empresas") {
+    return <PortalEmpresas onBack={() => navigate("inicio")} />
   }
 
   return (
