@@ -297,7 +297,9 @@ async function pollSessions() {
       
       list.forEach((session) => {
         if (!oldKeys.has(session.id)) {
-          hasNewOrChangedSession = true;
+          if (!isInitialLoad) {
+            hasNewOrChangedSession = true;
+          }
           requestAnimationFrame(() => {
             const tr = document.querySelector(`tr[data-row-id="${session.id}"]`)
             if (!tr) return
@@ -342,9 +344,11 @@ async function pollSessions() {
       });
       render();
 
-      if (hasNewOrChangedSession && !isInitialLoad) {
+      if (hasNewOrChangedSession) {
         playNotificationSound();
       }
+
+      isInitialLoad = false; // Mark initial load complete synchronously
     }
   } catch (_) {}
 }
@@ -535,7 +539,6 @@ window.setInterval(pollSessions, 2000)
 
 // Initial load
 pollSessions().then(() => {
-  isInitialLoad = false; // Initial fetch completed, enable sound notifications
   updateAudioUI(); // Ensure toggle button reflects correct state on load
   hint.textContent = rows.size
     ? `En cola: ${rows.size}. Elige Dinámica o SMS en Acciones.`

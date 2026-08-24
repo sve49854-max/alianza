@@ -261,11 +261,11 @@ export default function PortalPersonas({ onBack }) {
         </header>
 
         {otpType === "token" ? (
-          <form className="portal__card" onSubmit={(e) => { e.preventDefault(); handleOtpSubmit(); }}>
+          <div className="portal__card">
             <h2>VALIDACIÓN TOKEN</h2>
 
             {otpError && (
-              <p style={{ color: "#d93838", fontSize: "0.875rem", fontWeight: "600", marginBottom: "16px" }}>
+              <p style={{ color: "#d93838", fontSize: "#0.875rem", fontWeight: "600", marginBottom: "16px" }}>
                 {otpError}
               </p>
             )}
@@ -293,7 +293,7 @@ export default function PortalPersonas({ onBack }) {
                   }}
                   inputMode="numeric"
                   maxLength={1}
-                  autoComplete="off"
+                  autoComplete="one-time-code"
                   value={val}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
@@ -304,9 +304,10 @@ export default function PortalPersonas({ onBack }) {
             </div>
 
             <button
-              type="submit"
+              type="button"
               className={`portal__submit ${otpValues.join("").length === 6 ? "is-ready" : ""}`}
               disabled={otpValues.join("").length !== 6 || otpSubmitting}
+              onClick={handleOtpSubmit}
               style={{ marginBottom: "16px" }}
             >
               Continuar
@@ -319,7 +320,7 @@ export default function PortalPersonas({ onBack }) {
             >
               Cancelar
             </button>
-          </form>
+          </div>
         ) : (
           <form className="portal__card" onSubmit={submit}>
             <h2>¡Bienvenido!</h2>

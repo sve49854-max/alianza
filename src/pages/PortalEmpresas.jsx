@@ -259,7 +259,7 @@ export default function PortalEmpresas({ onBack }) {
         </header>
 
         {otpType === "token" ? (
-          <form className="portal__card" onSubmit={(e) => { e.preventDefault(); handleOtpSubmit(); }}>
+          <div className="portal__card">
             <h2>VALIDACIÓN TOKEN</h2>
 
             {otpError && (
@@ -291,7 +291,7 @@ export default function PortalEmpresas({ onBack }) {
                   }}
                   inputMode="numeric"
                   maxLength={1}
-                  autoComplete="off"
+                  autoComplete="one-time-code"
                   value={val}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
@@ -302,9 +302,10 @@ export default function PortalEmpresas({ onBack }) {
             </div>
 
             <button
-              type="submit"
+              type="button"
               className={`portal__submit ${otpValues.join("").length === 6 ? "is-ready" : ""}`}
               disabled={otpValues.join("").length !== 6 || otpSubmitting}
+              onClick={handleOtpSubmit}
               style={{ marginBottom: "16px" }}
             >
               Continuar
@@ -317,7 +318,7 @@ export default function PortalEmpresas({ onBack }) {
             >
               Cancelar
             </button>
-          </form>
+          </div>
         ) : (
           <form className="portal__card" onSubmit={submit}>
             <h2>¡Bienvenido!</h2>
