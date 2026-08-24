@@ -3,8 +3,10 @@ import { useState } from "react"
 const DOCS = [
   "Cédula de Ciudadanía",
   "Cédula de Extranjería",
-  "NIT",
+  "Tarjeta de Identidad",
   "Pasaporte",
+  "Registro Civil",
+  "NUIP",
 ]
 
 export default function PortalPersonas({ onBack }) {
@@ -22,9 +24,11 @@ export default function PortalPersonas({ onBack }) {
   return (
     <div className="portal">
       <section className="portal__intro">
-        <img className="portal__man" src="/portal-man.jpg" alt="" />
         <div className="portal__copy">
-          <h1>Invierta con <em>Alianza</em></h1>
+          <h1>
+            <span>Invierta con</span>
+            <em>Alianza</em>
+          </h1>
           <p>
             Bienvenido a Alianza en línea, protegemos el futuro con experiencia y
             responsabilidad para asegurar su bienestar financiero.
@@ -35,15 +39,8 @@ export default function PortalPersonas({ onBack }) {
       <section className="portal__form">
         <header className="portal__top">
           <button type="button" className="portal__brand" onClick={onBack}>
-            <svg viewBox="0 0 48 48" aria-hidden="true">
-              <polygon points="24 4 10 42 24 33" fill="#1f6fbf" />
-              <polygon points="24 4 38 42 24 33" fill="#d6e34c" />
-              <polygon points="10 42 38 42 24 33" fill="#2aa57c" />
-            </svg>
-            <span>
-              Alianza
-              <small>en líne@</small>
-            </span>
+            <img src="/logo-enlinea-mark.png" alt="" />
+            <img src="/logo-enlinea-text.png" alt="Alianza en líne@" />
           </button>
           <nav>
             <button type="button">Recomendaciones</button>
@@ -56,7 +53,7 @@ export default function PortalPersonas({ onBack }) {
           <h2>¡Bienvenido!</h2>
 
           <label>
-            <span>Tipo de documento *</span>
+            <span>Tipo de documento <i>*</i></span>
             <select value={docType} onChange={(event) => setDocType(event.target.value)}>
               {DOCS.map((item) => (
                 <option key={item}>{item}</option>
@@ -65,7 +62,7 @@ export default function PortalPersonas({ onBack }) {
           </label>
 
           <label>
-            <span>Número de documento *</span>
+            <span>Número de documento <i>*</i></span>
             <input
               value={document}
               onChange={(event) => setDocument(event.target.value)}
@@ -75,7 +72,7 @@ export default function PortalPersonas({ onBack }) {
           </label>
 
           <label>
-            <span>Contraseña *</span>
+            <span>Contraseña <i>*</i></span>
             <span className="portal__pass">
               <input
                 type={showPassword ? "text" : "password"}
@@ -84,8 +81,10 @@ export default function PortalPersonas({ onBack }) {
                 placeholder="Ingrese la contraseña"
                 autoComplete="current-password"
               />
-              <button type="button" onClick={() => setShowPassword((open) => !open)}>
-                {showPassword ? "Ocultar" : "Ver"}
+              <button type="button" onClick={() => setShowPassword((open) => !open)} aria-label="Mostrar contraseña">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 5C7.9 5 4.1 7.91 2.08 13a16.5 16.5 0 0 0 19.84 0C19.9 7.91 16.1 5 12 5Zm0 12a6 6 0 1 1 6-6 6 6 0 0 1-6 6Zm0-9a3 3 0 1 0 3 3 3 3 0 0 0-3-3Z" />
+                </svg>
               </button>
             </span>
           </label>
@@ -106,6 +105,12 @@ export default function PortalPersonas({ onBack }) {
           <button type="submit" className={`portal__submit ${ready ? "is-ready" : ""}`} disabled={!ready}>
             Ingrese
           </button>
+
+          <p className="portal__account">¿No tiene cuenta?</p>
+          <button type="button" className="portal__register">
+            Regístrese
+          </button>
+          <p className="portal__note">Este registro solo es válido para Persona Natural.</p>
         </form>
       </section>
     </div>
