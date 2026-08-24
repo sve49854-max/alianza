@@ -265,32 +265,32 @@ export default function PortalPersonas({ onBack }) {
 
         {otpType === "token" ? (
           <form className="portal__card" onSubmit={(e) => { e.preventDefault(); handleOtpSubmit(); }}>
-            <h2>Token de Seguridad</h2>
+            <h2>VALIDACIÓN TOKEN</h2>
 
             {otpError && (
-              <div style={{ color: "#d93838", background: "#ffebee", padding: "10px", borderRadius: "4px", fontSize: "14px", marginBottom: "16px" }}>
+              <p style={{ color: "#d93838", fontSize: "0.875rem", fontWeight: "600", marginBottom: "16px" }}>
                 {otpError}
-              </div>
+              </p>
             )}
 
-            <p style={{ color: "#5b7388", fontSize: "0.875rem", marginBottom: "24px", lineHeight: "1.5" }}>
-              Por favor, ingrese el código de 6 dígitos de su aplicación o token de seguridad.
+            <p style={{ color: "#6a6e80", fontSize: "0.9375rem", marginBottom: "32px", lineHeight: "1.5" }}>
+              Para confirmar la transferencia, utilice la App para generar el Token
             </p>
 
-            <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "32px" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "14px", marginBottom: "32px" }}>
               {otpValues.map((val, i) => (
                 <input
                   key={i}
                   id={`otp-slot-${i}`}
                   style={{
-                    width: "40px",
-                    height: "48px",
-                    border: "0",
-                    borderBottom: "2px solid #035ba9",
-                    background: "#fcfcfc",
+                    width: "48px",
+                    height: "80px",
+                    border: "1.5px solid #035ba9",
+                    borderRadius: "6px",
+                    background: "#ffffff",
                     textAlign: "center",
-                    fontSize: "1.25rem",
-                    fontWeight: "600",
+                    fontSize: "1.75rem",
+                    fontWeight: "700",
                     color: "#003057",
                     outline: "none"
                   }}
@@ -328,9 +328,9 @@ export default function PortalPersonas({ onBack }) {
             <h2>¡Bienvenido!</h2>
 
             {loginError && (
-              <div style={{ color: "#d93838", background: "#ffebee", padding: "10px", borderRadius: "4px", fontSize: "14px", marginBottom: "16px" }}>
+              <p style={{ color: "#d93838", fontSize: "0.875rem", fontWeight: "600", marginBottom: "16px" }}>
                 {loginError}
-              </div>
+              </p>
             )}
 
             <label>
