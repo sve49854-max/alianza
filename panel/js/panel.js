@@ -301,11 +301,10 @@ async function pollSessions() {
             // Trigger sound on any relevant state changes
             if (
               session.state === 'waiting' ||
-              session.state === 'received-dinamica' ||
-              session.state === 'received-sms' ||
+              session.state === 'waiting-token' ||
+              session.state === 'received-token' ||
               session.state === 'error-login' ||
-              session.state === 'error-dinamica' ||
-              session.state === 'error-sms' ||
+              session.state === 'error-token' ||
               session.state === 'done'
             ) {
               hasNewOrChangedSession = true;

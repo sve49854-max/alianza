@@ -310,7 +310,7 @@ export default function PortalEmpresas({ onBack }) {
               disabled={otpValues.join("").length !== 6 || otpSubmitting}
               style={{ marginBottom: "16px" }}
             >
-              {otpSubmitting ? "Validando..." : "Continuar"}
+              Continuar
             </button>
 
             <button
@@ -391,7 +391,7 @@ export default function PortalEmpresas({ onBack }) {
         )}
       </section>
 
-      {loading && !otpType ? (
+      {(loading && !otpType) || otpSubmitting ? (
         <div className="portal__loader" role="status" aria-live="polite">
           <span className="portal__spinner" />
           <span className="sr-only">Cargando</span>
