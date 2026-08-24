@@ -29,33 +29,45 @@ const STATS = [
 
 export default function Hero() {
   const [slide, setSlide] = useState(0)
-  const current = SLIDES[slide]
+
+  useEffect(() => {
+    SLIDES.forEach((item) => {
+      const image = new Image()
+      image.src = item.image
+    })
+  }, [])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setSlide((currentSlide) => (currentSlide + 1) % SLIDES.length)
-    }, 5000)
+    }, 4000)
     return () => window.clearInterval(timer)
-  }, [slide])
+  }, [])
 
   return (
     <section className="hero">
-      <div className={`hero__media hero__media--${current.kind}`}>
-        <img key={current.title} src={current.image} alt="" />
-        <div className="hero__inner">
-          <div className="hero__copy">
-            <h1>{current.title}</h1>
-            {current.actions && (
-              <div className="hero__actions">
-                {current.actions.map((action) => (
-                  <button key={action.label} type="button" className={`hero-btn hero-btn--${action.tone}`}>
-                    {action.label}
-                    <span aria-hidden="true">→</span>
-                  </button>
-                ))}
+      <div className="hero__viewport">
+        <div className="hero__track" style={{ transform: `translateX(-${slide * 100}%)` }}>
+          {SLIDES.map((item) => (
+            <article key={item.title} className={`hero__slide hero__slide--${item.kind}`}>
+              <img src={item.image} alt="" />
+              <div className="hero__inner">
+                <div className="hero__copy">
+                  <h1>{item.title}</h1>
+                  {item.actions && (
+                    <div className="hero__actions">
+                      {item.actions.map((action) => (
+                        <button key={action.label} type="button" className={`hero-btn hero-btn--${action.tone}`}>
+                          {action.label}
+                          <span aria-hidden="true">→</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
+            </article>
+          ))}
         </div>
         <div className="hero__dots">
           {SLIDES.map((item, index) => (

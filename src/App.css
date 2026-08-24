@@ -215,39 +215,39 @@ main {
   background: var(--navy);
 }
 
-.hero__media {
+.hero__viewport {
   position: relative;
   height: 520px;
+  overflow: hidden;
 }
 
-.hero__media img {
+.hero__track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.7s ease;
+}
+
+.hero__slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.hero__slide img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: heroFade 0.55s ease;
 }
 
-@keyframes heroFade {
-  from {
-    opacity: 0.25;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.hero__media--years img {
+.hero__slide--years img {
   object-position: right center;
 }
 
-.hero__media--hand img {
+.hero__slide--hand img {
   object-position: 82% 45%;
-}
-
-.hero__shade {
-  display: none;
 }
 
 .hero__inner {
@@ -255,7 +255,7 @@ main {
   z-index: 1;
   width: min(calc(100% - 40px), var(--container));
   margin: 0 auto;
-  height: 520px;
+  height: 100%;
   display: flex;
   align-items: center;
   padding: 40px 0 0;
@@ -845,13 +845,11 @@ main {
     display: flex;
   }
 
-  .hero__media,
-  .hero__inner {
+  .hero__viewport {
     height: 420px;
-    min-height: 420px;
   }
 
-  .hero__media--hand img {
+  .hero__slide--hand img {
     object-position: 90% 40%;
   }
 
