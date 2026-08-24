@@ -271,7 +271,7 @@ export default function PortalPersonas({ onBack }) {
             )}
 
             <p style={{ color: "#6a6e80", fontSize: "0.9375rem", marginBottom: "32px", lineHeight: "1.5" }}>
-              Para confirmar la transferencia, utilice la App para generar el Token
+              Para confirmar el inicio de sesión, utilice la App para generar el Token
             </p>
 
             <div style={{ display: "flex", justifyContent: "center", gap: "14px", marginBottom: "32px" }}>
